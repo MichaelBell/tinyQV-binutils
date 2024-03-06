@@ -252,6 +252,10 @@ print_insn_args (const char *oparg, insn_t l, bfd_vma pc, disassemble_info *info
 	      print (info->stream, dis_style_register, "%s",
 		     riscv_gpr_names[X_SP]);
 	      break;
+	    case 'e': /* RS1, constrained to equal tp.  */
+	      print (info->stream, dis_style_register, "%s",
+		     riscv_gpr_names[X_TP]);
+	      break;
 	    case 'V': /* RS2 */
 	      print (info->stream, dis_style_register, "%s",
 		     riscv_gpr_names[EXTRACT_OPERAND (CRS2, l)]);

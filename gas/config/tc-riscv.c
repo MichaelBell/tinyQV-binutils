@@ -1262,6 +1262,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	    {
 	    case 'U': break; /* CRS1, constrained to equal RD.  */
 	    case 'c': break; /* CRS1, constrained to equal sp.  */
+      case 'e': break; /* CRS1, constrained to equal tp.  */
 	    case 'T': /* CRS2, floating point.  */
 	    case 'V': USE_BITS (OP_MASK_CRS2, OP_SH_CRS2); break;
 	    case 'S': /* CRS1S, floating point.  */
@@ -2043,6 +2044,16 @@ macro (struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_I);
       break;
 
+    case M_LW2:
+      pcrel_load (rd, rd, imm_expr, "lw2",
+		  BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_I);
+      break;
+
+    case M_LW4:
+      pcrel_load (rd, rd, imm_expr, "lw4",
+		  BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_I);
+      break;
+
     case M_LWU:
       pcrel_load (rd, rd, imm_expr, "lwu",
 		  BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_I);
@@ -2075,6 +2086,21 @@ macro (struct riscv_cl_insn *ip, expressionS *imm_expr,
 
     case M_SW:
       pcrel_store (rs2, rs1, imm_expr, "sw",
+		   BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_S);
+      break;
+
+    case M_SW2:
+      pcrel_store (rs2, rs1, imm_expr, "sw2",
+		   BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_S);
+      break;
+
+    case M_SW4:
+      pcrel_store (rs2, rs1, imm_expr, "sw4",
+		   BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_S);
+      break;
+
+    case M_SW4N:
+      pcrel_store (rs2, rs1, imm_expr, "sw4n",
 		   BFD_RELOC_RISCV_PCREL_HI20, BFD_RELOC_RISCV_PCREL_LO12_S);
       break;
 
@@ -2599,6 +2625,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		case 'c': /* RS1, constrained to equal sp.  */
 		  if (!reg_lookup (&asarg, RCLASS_GPR, &regno)
 		      || regno != X_SP)
+		    break;
+		  continue;
+		case 'e': /* RS1, constrained to equal tp.  */
+		  if (!reg_lookup (&asarg, RCLASS_GPR, &regno)
+		      || regno != X_TP)
 		    break;
 		  continue;
 		case 'z': /* RS2, constrained to equal x0.  */
