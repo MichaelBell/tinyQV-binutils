@@ -1498,6 +1498,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	    {
 	    case 'U': break; /* CRS1, constrained to equal RD.  */
 	    case 'c': break; /* CRS1, constrained to equal sp.  */
+      case 'e': break; /* CRS1, constrained to equal tp.  */
 	    case 'T': /* CRS2, floating point.  */
 	    case 'V': USE_BITS (OP_MASK_CRS2, OP_SH_CRS2); break;
 	    case 'S': /* CRS1S, floating point.  */
@@ -3004,6 +3005,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		case 'c': /* RS1, constrained to equal sp.  */
 		  if (!reg_lookup (&asarg, RCLASS_GPR, &regno)
 		      || regno != X_SP)
+		    break;
+		  continue;
+		case 'e': /* RS1, constrained to equal tp.  */
+		  if (!reg_lookup (&asarg, RCLASS_GPR, &regno)
+		      || regno != X_TP)
 		    break;
 		  continue;
 		case 'z': /* RS2, constrained to equal x0.  */
